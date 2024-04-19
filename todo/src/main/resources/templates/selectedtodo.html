@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
+
 <head>
     <title>Todo List</title>
     <link rel="stylesheet" type="text/css" th:href="@{/styles.css}" />
@@ -8,7 +9,12 @@
 </head>
 
 <body>
-    <h1>Todo List</h1>
+
+
+    <div class="header">
+        <button class="gg-arrow-left-o" onclick="window.location.href='/todolist';"></button>
+        <h1 class="title-container" th:text="${todo.name}"></h1>
+    </div>
 
 
     <form th:object="${todoItem}" th:action="@{'/saveitem/' + ${todo.id}}" method="post">
@@ -16,65 +22,44 @@
         <input type="hidden" name="todoId" th:value="${todo.id}" />
 
         <!-- Input field for entering the title of the new todo item -->
-        <input type="text" id="title" name="title" placeholder="Title" required />
+        <input class="textfield" type="text" id="title" name="title" placeholder="Title" required />
 
-        <input type="date" id="deadline" name="deadline" required />
-
-        <!-- Submit button -->
+        <input class="date" type="date" id="deadline" name="deadline" required />
         <button class="savebutton savebutton1" type="submit" value="Save item">Save</button>
     </form>
 
-
     <div th:if="${not #lists.isEmpty(todoItems)}">
         <h2>Todo Items</h2>
-        <table>
-            <tr>
-                <td>
-                    <h5>Title</h5>
-                </td>
-                <td>
-                    <h5>Deadline</h5>
-                </td>
-                <td>
-                    <h5>Done</h5>
-                </td>
-                <td>Poista</td>
-
-            </tr>
-            <tr>
-                <ul>
-                    <li th:each="todoItem : ${todoItems}">
-                        <div class="todo-container">
-                            <td>
-                                <span th:text="${todoItem.title}"></span>
-                            </td>
-                            <td>
-                                <span th:text="${todoItem.deadline}"></span>
-                            </td>
-                            <td>
-                                <label class="container">
-                                    <input type="checkbox" th:id="'status_' + ${todoItem.id}"
-                                        th:checked="${todoItem.status}"
-                                        th:onclick="'javascript:toggleStatus(' + ${todoItem.id} + ');'" />
-                                    <span class="checkmark"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <button class="deletebutton deletebutton1"
-                                    th:onclick="'javascript:deleteItem(' + ${todoItem.id} + ');'">Delete</button>
-                            </td>
-                        </div>
-                    </li>
-                </ul>
-            </tr>
-        </table>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Title</th>
+                    <th>Deadline</th>
+                    <th>Done</th>
+                    <th>Poista</th>
+                </tr>
+                <tr th:each="todoItem : ${todoItems}">
+                    <td><span th:text="${todoItem.title}"></span></td>
+                    <td><span th:text="${#temporals.format(todoItem.deadline, 'MM/dd/yyyy')}"></span></td>
+                    <td>
+                        <label class="container">
+                            <input type="checkbox" th:id="'status_' + ${todoItem.id}" th:checked="${todoItem.status}"
+                                th:onclick="'javascript:toggleStatus(' + ${todoItem.id} + ');'" />
+                            <span class="checkmark"></span>
+                        </label>
+                    </td>
+                    <td>
+                        <button class="deletebutton deletebutton1"
+                            th:onclick="'javascript:deleteItem(' + ${todoItem.id} + ');'">Delete</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
-
 
     <div th:if="${#lists.isEmpty(todoItems)}">
         <h2>No todo items available.</h2>
     </div>
-
 
 
     <script th:inline="javascript">
@@ -87,7 +72,6 @@
                     if (!response.ok) {
                         console.error('Failed to delete todo item');
                     } else {
-                        // Reload the page after successful deletion
                         window.location.reload();
                     }
                 }).catch(function (error) {
@@ -119,5 +103,4 @@
     </script>
 
 </body>
-
 </html>

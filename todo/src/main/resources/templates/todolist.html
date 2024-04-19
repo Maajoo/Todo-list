@@ -10,18 +10,12 @@
 
 <body>
     <h1>Todos</h1>
-
-    <!-- Form for creating a new todo list -->
-
     <form th:object="${todo}" th:action="@{save}" action="#" method="post">
-
             <input type="text" id="name" name="name" placeholder="Title" required />
             <button class="savebutton savebutton1" type="submit" value="Save">Save</button>
-
     </form>
 
-    <!-- Display existing todo lists -->
-    <div th:if="${not #lists.isEmpty(todos)}">
+    <div class="todolist-container" th:if="${not #lists.isEmpty(todos)}">
         <h2>Existing Lists</h2>
         <ul>
             <li th:each="todo : ${todos}">

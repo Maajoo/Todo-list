@@ -1,9 +1,6 @@
 package todo.todo;
 
-//import static method antMatcher
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
-
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +23,7 @@ public class WebSecurityConfig {
     private UserDetailsService userDetailsService;
 
     // with lambda
+    @SuppressWarnings("removal")
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
@@ -44,8 +42,8 @@ public class WebSecurityConfig {
             );
 
         // Allow access to H2 console with CSRF disabled
-        http.csrf().disable();
-        http.headers().frameOptions().disable();
+        http.csrf(csrf -> csrf.disable());
+        http.headers(headers -> headers.frameOptions().disable());
 
         return http.build();
     }

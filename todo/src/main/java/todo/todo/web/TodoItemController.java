@@ -28,7 +28,6 @@ public class TodoItemController {
     @Autowired
     private TodoRepository todoRepository;
 
-    
     // Todo item page
     @RequestMapping("/open/{id}")
     public String giveTodolist(@PathVariable("id") Long todoId, Model model) {
