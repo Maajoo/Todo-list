@@ -2,13 +2,13 @@ package todo.todo.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import todo.todo.domain.Todo;
-import todo.todo.domain.TodoItem;
-import todo.todo.domain.TodoItemRepository;
 import todo.todo.domain.TodoRepository;
 
 import java.util.List;
@@ -19,19 +19,24 @@ public class TodoController {
     @Autowired
     private TodoRepository todoRepository;
 
-    @Autowired
-    private TodoItemRepository todoitemRepository;
-
-
     // Login page
     @RequestMapping(value = "/login")
     public String login() {
         return "login";
     }
 
+    // Register page
+    @RequestMapping(value = "/register")
+    public String register() {
+        return "register";
+    }
+
     // Todo list page
     @RequestMapping("/todolist")
     public String giveTodolist(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        model.addAttribute("username", username);
         model.addAttribute("todos", todoRepository.findAll());
         return "todolist";
     }
@@ -50,21 +55,6 @@ public class TodoController {
         return ResponseEntity.ok().build();
     }
 
-    // Open Todo
-    @RequestMapping(value = "/open/{id}", method = RequestMethod.GET)
-    public String openTodo(@PathVariable("id") Long todoId, Model model) {
-        // Retrieve the todo list
-        Todo todo = todoRepository.findById(todoId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid todo Id: " + todoId));
-
-        // Retrieve and pass the list of todo items associated with the todo list
-        List<TodoItem> todoItems = todoitemRepository.findAllByTodoId(todoId);
-
-        model.addAttribute("todo", todo);
-        model.addAttribute("todoItems", todoItems);
-
-        return "selectedtodo";
-    }
 
     // RESTful service to get all todos
     @RequestMapping(value = "/todos", method = RequestMethod.GET)

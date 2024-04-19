@@ -9,6 +9,10 @@
 </head>
 
 <body>
+    <h5 class="username"th:text="${username}"></h5>
+    <div class="logout-container">
+        <button class="logoutbutton" onclick="window.location.href='/logout';">Logout</button>
+    </div>
     <h1>Todos</h1>
     <form th:object="${todo}" th:action="@{save}" action="#" method="post">
             <input type="text" id="name" name="name" placeholder="Title" required />

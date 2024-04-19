@@ -12,7 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -29,8 +29,11 @@ public class WebSecurityConfig {
         http
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(antMatcher("/css/**")).permitAll() // Enable css when logged out
+                .requestMatchers(antMatcher("/styles.css")).permitAll()
                 .requestMatchers(antMatcher("/add-todo-item")).permitAll() // Allow access to add-todo-item for ADMIN and USER roles
                 .requestMatchers(antMatcher("/h2-console/**")).permitAll() // Allow access to H2 console
+                .requestMatchers(antMatcher("/register")).permitAll() // Allow access to registration endpoint without authentication
+                .requestMatchers(antMatcher("/login")).permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(formlogin -> formlogin
@@ -47,6 +50,12 @@ public class WebSecurityConfig {
 
         return http.build();
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {

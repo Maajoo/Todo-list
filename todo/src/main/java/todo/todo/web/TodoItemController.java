@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,9 +33,24 @@ public class TodoItemController {
     // Todo item page
     @RequestMapping("/open/{id}")
     public String giveTodolist(@PathVariable("id") Long todoId, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        model.addAttribute("username", username);
         model.addAttribute("todoitems", todoitemRepository.findAllByTodoId(todoId));
-        return "/open/{id}";
+
+        // Retrieve the todo list
+        Todo todo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid todo Id: " + todoId));
+
+        // Retrieve and pass the list of todo items associated with the todo list
+        List<TodoItem> todoItems = todoitemRepository.findAllByTodoId(todoId);
+
+        model.addAttribute("todo", todo);
+        model.addAttribute("todoItems", todoItems);
+
+        return "selectedtodo";
     }
+    
 
     // Save Todoitem
     @RequestMapping(value = "/saveitem/{todoId}", method = RequestMethod.POST)
