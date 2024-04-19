@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Todo List</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles.css}" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <h1>Todo List</h1>
+
+
+    <form th:object="${todoItem}" th:action="@{'/saveitem/' + ${todo.id}}" method="post">
+        <!-- Hidden input field to store the ID of the current todo list -->
+        <input type="hidden" name="todoId" th:value="${todo.id}" />
+
+        <!-- Input field for entering the title of the new todo item -->
+        <input type="text" id="title" name="title" placeholder="Title" required />
+
+        <input type="date" id="deadline" name="deadline" required />
+
+        <!-- Submit button -->
+        <button class="savebutton savebutton1" type="submit" value="Save item">Save</button>
+    </form>
+
+
+    <div th:if="${not #lists.isEmpty(todoItems)}">
+        <h2>Todo Items</h2>
+        <table>
+            <tr>
+                <td>
+                    <h5>Title</h5>
+                </td>
+                <td>
+                    <h5>Deadline</h5>
+                </td>
+                <td>
+                    <h5>Done</h5>
+                </td>
+                <td>Poista</td>
+
+            </tr>
+            <tr>
+                <ul>
+                    <li th:each="todoItem : ${todoItems}">
+                        <div class="todo-container">
+                            <td>
+                                <span th:text="${todoItem.title}"></span>
+                            </td>
+                            <td>
+                                <span th:text="${todoItem.deadline}"></span>
+                            </td>
+                            <td>
+                                <label class="container">
+                                    <input type="checkbox" th:id="'status_' + ${todoItem.id}"
+                                        th:checked="${todoItem.status}"
+                                        th:onclick="'javascript:toggleStatus(' + ${todoItem.id} + ');'" />
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <button class="deletebutton deletebutton1"
+                                    th:onclick="'javascript:deleteItem(' + ${todoItem.id} + ');'">Delete</button>
+                            </td>
+                        </div>
+                    </li>
+                </ul>
+            </tr>
+        </table>
+    </div>
+
+
+    <div th:if="${#lists.isEmpty(todoItems)}">
+        <h2>No todo items available.</h2>
+    </div>
+
+
+
+    <script th:inline="javascript">
+        function deleteItem(todoItemId) {
+            if (confirm('Are you sure you want to delete this todo item?')) {
+                // Send AJAX request to delete todo item
+                fetch('/deleteItem/' + todoItemId, {
+                    method: 'DELETE',
+                }).then(function (response) {
+                    if (!response.ok) {
+                        console.error('Failed to delete todo item');
+                    } else {
+                        // Reload the page after successful deletion
+                        window.location.reload();
+                    }
+                }).catch(function (error) {
+                    console.error('Failed to delete todo item:', error);
+                });
+            }
+        }
+    </script>
+
+    <script th:inline="javascript">
+        function toggleStatus(todoItemId) {
+            var checkbox = document.getElementById('status_' + todoItemId);
+
+            // Send AJAX request to update todo item status
+            fetch('/toggleStatus/' + todoItemId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: checkbox.checked }),
+            }).then(function (response) {
+                if (!response.ok) {
+                    console.error('Failed to toggle status');
+                }
+            }).catch(function (error) {
+                console.error('Failed to toggle status:', error);
+            });
+        }
+    </script>
+
+</body>
+
+</html>
