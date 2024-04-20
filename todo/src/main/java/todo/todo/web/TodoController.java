@@ -62,7 +62,6 @@ public class TodoController {
         return ResponseEntity.ok().body(successMessage);
     }
 
-
     // RESTful service to get all todos
     @RequestMapping(value = "/todos", method = RequestMethod.GET)
     public @ResponseBody List<Todo> todoListRest() {

@@ -44,7 +44,8 @@ public class TodoItemController {
 
         // Retrieve the todo list
         Todo todo = todoRepository.findById(todoId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid todo Id: " + todoId));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid todo Id: " +
+                        todoId));
 
         // Retrieve and pass the list of todo items associated with the todo list
         List<TodoItem> todoItems = todoitemRepository.findAllByTodoId(todoId);
@@ -54,7 +55,6 @@ public class TodoItemController {
 
         return "selectedtodo";
     }
-    
 
     // Save Todoitem
     @RequestMapping(value = "/saveitem/{todoId}", method = RequestMethod.POST)

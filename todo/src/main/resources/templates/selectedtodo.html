@@ -27,7 +27,7 @@
             <h5 class="username" th:text="${username}"></h5>
         </div>
     </div>
-    
+
     <div class="logout-container">
         <button class="logoutbutton" onclick="window.location.href='/logout';" th:text="#{lang.logout}"></button>
     </div>
@@ -43,10 +43,14 @@
         <input type="hidden" name="todoId" th:value="${todo.id}" />
 
         <!-- Input field for entering the title of the new todo item -->
-        <input class="textfield" type="text" id="title" name="title" th:placeholder="#{lang.task}" required />
+        <input sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" class="textfield" type="text" id="title"
+            name="title" th:placeholder="#{lang.task}" required />
 
-        <input class="date" type="date" id="deadline" name="deadline" required />
-        <button class="savebutton savebutton1" type="submit" value="Save item" th:text="#{lang.save}"></button>
+        <input sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" class="date" type="date" id="deadline"
+            name="deadline" required />
+
+        <button sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" class="savebutton savebutton1" type="submit"
+            value="Save item" th:text="#{lang.save}"></button>
     </form>
 
     <div th:if="${not #lists.isEmpty(todoItems)}">
@@ -63,13 +67,21 @@
                     <td><span th:text="${#temporals.format(todoItem.deadline, 'MM/dd/yyyy')}"></span></td>
                     <td>
                         <label class="container">
-                            <input type="checkbox" th:id="'status_' + ${todoItem.id}" th:checked="${todoItem.status}"
-                                th:onclick="'javascript:toggleStatus(' + ${todoItem.id} + ');'" />
+                            <!-- Single checkbox for toggle (accessible to USER and ADMIN) -->
+                            <input type="checkbox" th:id="'status_' + ${todoItem.id}"
+                                   th:checked="${todoItem.status}"
+                                   th:onclick="'javascript:toggleStatus(' + ${todoItem.id} + ');'"
+                                   sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')"/>
+                            <!-- Display-only checkbox (for others) -->
+                            <input type="checkbox" th:id="'status_' + ${todoItem.id}" disabled
+                                   th:checked="${todoItem.status}"
+                                   th:onclick="'javascript:toggleStatus(' + ${todoItem.id} + ');'"
+                                   sec:authorize="!hasAnyRole('ROLE_ADMIN', 'ROLE_USER')"/>
                             <span class="checkmark"></span>
                         </label>
                     </td>
                     <td>
-                        <button class="deletebutton deletebutton1"
+                        <button sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" class="deletebutton deletebutton1"
                             th:onclick="'javascript:deleteItem(' + ${todoItem.id} + ');'">Delete</button>
                     </td>
                 </tr>

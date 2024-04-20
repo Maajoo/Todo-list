@@ -1,7 +1,6 @@
 <!-- todolist.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <title>Todo Lists</title>
@@ -31,7 +30,7 @@
 
 
     <h1 th:text="#{lang.todolists}"></h1>
-    <form th:object="${todo}" th:action="@{save}" action="#" method="post">
+    <form sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" th:object="${todo}" th:action="@{save}" action="#" method="post">
         <input type="text" id="name" name="name" th:placeholder="#{lang.listname}" required />
         <button class="savebutton savebutton1" type="submit" th:text="#{lang.save}"></button>
     </form>
@@ -43,10 +42,12 @@
                 <div class="todo-container">
                     <span th:text="${todo.name}"></span>
                     <div>
-                        <a th:href="@{/open/{id}(id=${todo.id})}"><button class="listbutton listbutton1"
-                                th:text="#{lang.open}"></button></a>
-                        <button class="deletebutton deletebutton1"
-                            th:onclick="'javascript:deleteList(' + ${todo.id} + ');'" th:text="#{lang.delete}"></button>
+                        <a th:href="@{/open/{id}(id=${todo.id})}">
+                            <button class="listbutton listbutton1" th:text="#{lang.open}"></button>
+                        </a>
+                            <button sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" class="deletebutton deletebutton1"
+                                th:onclick="'javascript:deleteList(' + ${todo.id} + ');'"
+                                th:text="#{lang.delete}"></button>
                     </div>
                 </div>
             </li>
@@ -82,13 +83,6 @@
             var lang = getParameterByName('lang') || 'en'; // Default to English if no language parameter is provided
             document.getElementById('languageSelect').value = lang;
         };
-
-        // Function to update the selected language and reload the page
-        // function changeLanguage(lang) {
-        //     var currentUrl = window.location.href;
-        //     var baseUrl = currentUrl.split('?')[0];
-        //     window.location.href = baseUrl + '?lang=' + lang;
-        // }
 
         function changeLanguage(lang) {
             var currentUrl = window.location.href;

@@ -4,12 +4,11 @@
     xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head>
-    <title>Spring Security Example </title>
+    <title>Spring Security Example</title>
     <link rel="stylesheet" type="text/css" th:href="@{/styles.css}" />
 </head>
 
 <body>
-
 
     <div class="dropdowndiv">
         <form id="languageForm">
@@ -22,8 +21,6 @@
         </form>
     </div>
 
-
-
     <h1 th:text="#{login.page.title}"></h1>
     <div th:if="${param.error}">
         <h2>Invalid username and password.</h2>
@@ -32,20 +29,22 @@
         <h2>You have been logged out.</h2>
     </div>
 
-
-    <form th:action="@{/login}" th:lang="${#locale.language}" method="post">
-        <div><label><input type="text" name="username" th:placeholder="#{lang.username}" /> </label></div>
-        <div><label><input type="password" name="password" th:placeholder="#{lang.password}" /> </label></div>
+    <form id="loginForm" th:action="@{/login}" th:lang="${#locale.language}" method="post">
+        <div><label><input type="text" name="username" id="username" th:placeholder="#{lang.username}" /></label></div>
+        <div><label><input type="password" name="password" id="password" th:placeholder="#{lang.password}" /></label>
+        </div>
         <div>
-
             <a th:href="@{/register(lang=${#locale.language})}">
                 <button class="button button1" type="button" th:text="#{lang.register}"></button>
             </a>
 
             <button class="button button1" type="submit" th:text="#{lang.sign.in}"></button>
+
+            <div>
+                <button class="questbutton questbutton1" type="button" onclick="continueAsGuest()" th:text="#{lang.quest}"></button>
+            </div>
         </div>
     </form>
-
 
     <script type="text/javascript">
         // Function to initialize the dropdown menu with the current language
@@ -61,6 +60,12 @@
             window.location.href = baseUrl + '?lang=' + lang;
         }
 
+        // Function to continue as a guest
+        function continueAsGuest() {
+            document.getElementById('username').value = 'quest';
+            document.getElementById('password').value = 'quest';
+            document.getElementById('loginForm').submit();
+        }
 
         // Function to retrieve query parameters by name
         function getParameterByName(name) {

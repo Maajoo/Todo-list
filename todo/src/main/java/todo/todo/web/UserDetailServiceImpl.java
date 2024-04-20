@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import todo.todo.domain.User;
 import todo.todo.domain.UserRepository;
 
-
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
     private final UserRepository repository;
@@ -23,9 +22,12 @@ public class UserDetailServiceImpl implements UserDetailsService {
         if (currentUser == null) {
             throw new UsernameNotFoundException("Could not find user with username: " + username);
         }
+        String[] roles = currentUser.getRole().startsWith("ROLE_") ? new String[] { currentUser.getRole() }
+                : new String[] { "ROLE_" + currentUser.getRole() };
         UserDetails user = new org.springframework.security.core.userdetails.User(username,
                 currentUser.getPasswordHash(),
-                AuthorityUtils.createAuthorityList(currentUser.getRole()));
+                AuthorityUtils.createAuthorityList(roles));
         return user;
     }
+
 }
