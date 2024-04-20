@@ -1,3 +1,4 @@
+<!-- todolist.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
@@ -9,27 +10,43 @@
 </head>
 
 <body>
-    <h5 class="username"th:text="${username}"></h5>
-    <div class="logout-container">
-        <button class="logoutbutton" onclick="window.location.href='/logout';">Logout</button>
+    <div class="headerlanguagename">
+        <div class="dropdowndiv">
+            <form id="languageForm">
+                <select id="languageSelect" onchange="changeLanguage(this.value)">
+                    <h5>Language</h5>
+                    <option value="en">English</option>
+                    <option value="fi">Finnish</option>
+                    <option value="es">Spanish</option>
+                </select>
+            </form>
+        </div>
+        <div class="user-dropdown-container">
+            <h5 class="username" th:text="${username}"></h5>
+        </div>
     </div>
-    <h1>Todos</h1>
+    <div class="logout-container">
+        <button class="logoutbutton" onclick="window.location.href='/logout';" th:text="#{lang.logout}"></button>
+    </div>
+
+
+    <h1 th:text="#{lang.todolists}"></h1>
     <form th:object="${todo}" th:action="@{save}" action="#" method="post">
-            <input type="text" id="name" name="name" placeholder="Title" required />
-            <button class="savebutton savebutton1" type="submit" value="Save">Save</button>
+        <input type="text" id="name" name="name" th:placeholder="#{lang.listname}" required />
+        <button class="savebutton savebutton1" type="submit" th:text="#{lang.save}"></button>
     </form>
 
     <div class="todolist-container" th:if="${not #lists.isEmpty(todos)}">
-        <h2>Existing Lists</h2>
+        <h2 th:text="#{lang.existinglists}">Existing Lists</h2>
         <ul>
             <li th:each="todo : ${todos}">
                 <div class="todo-container">
                     <span th:text="${todo.name}"></span>
                     <div>
-                        <a th:href="@{/open/{id}(id=${todo.id})}"><button
-                                class="listbutton listbutton1">Open</button></a>
+                        <a th:href="@{/open/{id}(id=${todo.id})}"><button class="listbutton listbutton1"
+                                th:text="#{lang.open}"></button></a>
                         <button class="deletebutton deletebutton1"
-                            th:onclick="'javascript:deleteList(' + ${todo.id} + ');'">Delete</button>
+                            th:onclick="'javascript:deleteList(' + ${todo.id} + ');'" th:text="#{lang.delete}"></button>
                     </div>
                 </div>
             </li>
@@ -37,7 +54,7 @@
         </ul>
     </div>
     <div th:if="${#lists.isEmpty(todos)}">
-        <h2>No lists available.</h2>
+        <h2 th:text="#{lang.nolists}"></h2>
     </div>
 
     <script th:inline="javascript">
@@ -57,6 +74,34 @@
                     console.error('Failed to delete todo list:', error);
                 });
             }
+        }
+
+
+        // Function to initialize the dropdown menu with the current language
+        window.onload = function () {
+            var lang = getParameterByName('lang') || 'en'; // Default to English if no language parameter is provided
+            document.getElementById('languageSelect').value = lang;
+        };
+
+        // Function to update the selected language and reload the page
+        // function changeLanguage(lang) {
+        //     var currentUrl = window.location.href;
+        //     var baseUrl = currentUrl.split('?')[0];
+        //     window.location.href = baseUrl + '?lang=' + lang;
+        // }
+
+        function changeLanguage(lang) {
+            var currentUrl = window.location.href;
+            var baseUrl = currentUrl.split('?')[0];
+            window.location.href = baseUrl + '?lang=' + lang;
+            sessionStorage.setItem('selectedLanguage', lang); // Store selected language in session storage
+        }
+
+
+        // Function to retrieve query parameters by name
+        function getParameterByName(name) {
+            var urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
         }
     </script>
 </body>

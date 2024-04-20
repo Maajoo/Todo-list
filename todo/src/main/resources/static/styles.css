@@ -104,6 +104,7 @@ body {
     display: flex;
     justify-content: flex-end;
 }
+
 .logoutbutton {
     text-align: right;
     font-size: 16px;
@@ -148,6 +149,18 @@ input[type=text] {
 }
 
 input[type=password] {
+    max-width: 340px;
+    width: 20%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 1px solid whitesmoke;
+    background-color: #333333;
+    color: whitesmoke;
+}
+
+input[type=email] {
     max-width: 340px;
     width: 20%;
     padding: 12px 20px;
@@ -241,6 +254,13 @@ th {
     display: flex;
     align-items: center;
     justify-content: center;
+    /* Center the containers horizontally */
+}
+
+.headerlanguagename {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     /* Center the containers horizontally */
 }
 
@@ -395,4 +415,19 @@ th {
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
+}
+
+
+
+#languageForm * {
+    display: flex;
+    border-radius: 15px;
+    background-color: #333333;
+    color: whitesmoke;
+}
+
+#languageForm:hover * {
+    border-radius: 15px;
+    background-color: #444444;
+    color: whitesmoke;
 }

@@ -1,3 +1,4 @@
+<!-- selectedtodo.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
@@ -9,12 +10,28 @@
 </head>
 
 <body>
-    <h5 class="username"><span th:text="${username}"></span></h5>
-    <!-- <h5 class="username" th:text="${username}"></h5> -->
-    <div class="logout-container">
-        <button class="logoutbutton" onclick="window.location.href='/logout';">Logout</button>
+
+
+    <div class="headerlanguagename">
+        <div class="dropdowndiv">
+            <form id="languageForm">
+                <select id="languageSelect" onchange="changeLanguage(this.value)">
+                    <h5>Language</h5>
+                    <option value="en">English</option>
+                    <option value="fi">Finnish</option>
+                    <option value="es">Spanish</option>
+                </select>
+            </form>
+        </div>
+        <div class="user-dropdown-container">
+            <h5 class="username" th:text="${username}"></h5>
+        </div>
     </div>
     
+    <div class="logout-container">
+        <button class="logoutbutton" onclick="window.location.href='/logout';" th:text="#{lang.logout}"></button>
+    </div>
+
     <div class="header">
         <button class="gg-arrow-left-o" onclick="window.location.href='/todolist';"></button>
         <h1 class="title-container" th:text="${todo.name}"></h1>
@@ -26,21 +43,20 @@
         <input type="hidden" name="todoId" th:value="${todo.id}" />
 
         <!-- Input field for entering the title of the new todo item -->
-        <input class="textfield" type="text" id="title" name="title" placeholder="Title" required />
+        <input class="textfield" type="text" id="title" name="title" th:placeholder="#{lang.task}" required />
 
         <input class="date" type="date" id="deadline" name="deadline" required />
-        <button class="savebutton savebutton1" type="submit" value="Save item">Save</button>
+        <button class="savebutton savebutton1" type="submit" value="Save item" th:text="#{lang.save}"></button>
     </form>
 
     <div th:if="${not #lists.isEmpty(todoItems)}">
-        <h2>Todo Items</h2>
+        <h2 th:text="#{lang.todos}"></h2>
         <div class="table-container">
             <table>
                 <tr>
-                    <th>Title</th>
-                    <th>Deadline</th>
-                    <th>Done</th>
-                    <th>Poista</th>
+                    <th th:text="#{lang.task}"></th>
+                    <th th:text="#{lang.deadline}"></th>
+                    <th th:text="#{lang.status}"></th>
                 </tr>
                 <tr th:each="todoItem : ${todoItems}">
                     <td><span th:text="${todoItem.title}"></span></td>
@@ -62,7 +78,7 @@
     </div>
 
     <div th:if="${#lists.isEmpty(todoItems)}">
-        <h2>No todo items available.</h2>
+        <h2 th:text="#{lang.notodos}"></h2>
     </div>
 
 
@@ -103,6 +119,28 @@
             }).catch(function (error) {
                 console.error('Failed to toggle status:', error);
             });
+        }
+    </script>
+
+    <script type="text/javascript">
+        // Function to initialize the dropdown menu with the current language
+        window.onload = function () {
+            var lang = getParameterByName('lang') || 'en'; // Default to English if no language parameter is provided
+            document.getElementById('languageSelect').value = lang;
+        };
+
+        // Function to update the selected language and reload the page
+        function changeLanguage(lang) {
+            var currentUrl = window.location.href;
+            var baseUrl = currentUrl.split('?')[0];
+            window.location.href = baseUrl + '?lang=' + lang;
+        }
+
+
+        // Function to retrieve query parameters by name
+        function getParameterByName(name) {
+            var urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
         }
     </script>
 

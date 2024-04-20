@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,6 +31,8 @@ public class TodoItemController {
     private TodoItemRepository todoitemRepository;
     @Autowired
     private TodoRepository todoRepository;
+    @Autowired
+    private MessageSource messageSource;
 
     // Todo item page
     @RequestMapping("/open/{id}")
@@ -71,7 +75,9 @@ public class TodoItemController {
     @DeleteMapping("/deleteItem/{todoItemId}")
     public ResponseEntity<?> deleteItem(@PathVariable Long todoItemId) {
         todoitemRepository.deleteById(todoItemId);
-        return ResponseEntity.ok().build();
+
+        String successMessage = messageSource.getMessage("todo.delete.success", null, LocaleContextHolder.getLocale());
+        return ResponseEntity.ok().body(successMessage);
     }
 
     // Toggle todo item status

@@ -1,23 +1,63 @@
+<!-- register.html -->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-    <head>
-        <title>Register</title>
-        <link rel="stylesheet" type="text/css" th:href="@{/styles.css}" />
-    </head>
-    <body>
-        <h1>Register</h1>
-        <form th:action="@{/register}" method="post">
-            <div><label><input type="text" name="username" placeholder="User Name" required/> </label></div>
-            <div><label><input type="password" name="password" placeholder="Password" required/> </label></div>
-            <div><label><input type="email" name="email" placeholder="E-mail" required/> </label></div>
-            <div><button class="button button1" type="submit">Register</button></div>
-        </form>
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
-        <!-- <form th:object="${user}" th:action="@{register}" action="#" method="post">
-            <input type="text" id="username" name="username" placeholder="Username" required />
-            <input type="text" id="password" name="password" placeholder="Password" required />
-            <button class="savebutton savebutton1" type="submit" value="Register">Register</button>
-    </form> -->
-    </body>
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles.css}" />
+</head>
+
+<body>
+
+    <div class="dropdowndiv">
+        <form id="languageForm">
+            <select id="languageSelect" onchange="changeLanguage(this.value)">
+                <h5>Language</h5>
+                <option value="en">English</option>
+                <option value="fi">Finnish</option>
+                <option value="es">Spanish</option>
+            </select>
+        </form>
+    </div>
+
+
+    <div class="header">
+        <button class="gg-arrow-left-o" onclick="window.location.href='/login';"></button>
+        <h1 class="title-container" th:text="#{lang.register}"></h1>
+    </div>
+
+
+    <form th:action="@{/register}" method="post">
+        <div><label><input type="text" name="username" th:placeholder="#{lang.username}" required /> </label></div>
+        <div><label><input type="password" name="password" th:placeholder="#{lang.password}" required /> </label></div>
+        <div><label><input type="email" name="email" th:placeholder="#{lang.email}" required /> </label></div>
+        <div><button class="button button1" type="submit" th:text="#{lang.register}"></button></div>
+    </form>
+
+
+
+    <script type="text/javascript">
+        // Function to initialize the dropdown menu with the current language
+        window.onload = function () {
+            var lang = getParameterByName('lang') || 'en'; // Default to English if no language parameter is provided
+            document.getElementById('languageSelect').value = lang;
+        };
+
+        // Function to update the selected language and reload the page
+        function changeLanguage(lang) {
+            var currentUrl = window.location.href;
+            var baseUrl = currentUrl.split('?')[0];
+            window.location.href = baseUrl + '?lang=' + lang;
+        }
+
+
+        // Function to retrieve query parameters by name
+        function getParameterByName(name) {
+            var urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+    </script>
+</body>
+
 </html>

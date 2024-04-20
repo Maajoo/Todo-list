@@ -1,6 +1,8 @@
 package todo.todo.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +20,9 @@ import java.util.Optional;
 public class TodoController {
     @Autowired
     private TodoRepository todoRepository;
+
+    @Autowired
+    private MessageSource messageSource;
 
     // Login page
     @RequestMapping(value = "/login")
@@ -52,7 +57,9 @@ public class TodoController {
     @DeleteMapping("/deleteList/{todoId}")
     public ResponseEntity<?> deleteList(@PathVariable Long todoId) {
         todoRepository.deleteById(todoId);
-        return ResponseEntity.ok().build();
+
+        String successMessage = messageSource.getMessage("todo.delete.success", null, LocaleContextHolder.getLocale());
+        return ResponseEntity.ok().body(successMessage);
     }
 
 
