@@ -4,6 +4,10 @@ body {
     text-align: center;
 }
 
+a {
+    color: transparent;
+}
+
 .date {
     text-align: center;
     font-size: 16px;
