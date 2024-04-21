@@ -4,7 +4,7 @@
     xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head>
-    <title>Spring Security Example</title>
+    <title>Login</title>
     <link rel="stylesheet" type="text/css" th:href="@{/styles.css}" />
 </head>
 
@@ -23,10 +23,10 @@
 
     <h1 th:text="#{login.page.title}"></h1>
     <div th:if="${param.error}">
-        <h2>Invalid username and password.</h2>
+        <h2 th:text="#{lang.invaliduser}"></h2>
     </div>
     <div th:if="${param.logout}">
-        <h2>You have been logged out.</h2>
+        <h2 th:text="#{lang.loggedout}"></h2>
     </div>
 
     <form id="loginForm" th:action="@{/login}" th:lang="${#locale.language}" method="post">
