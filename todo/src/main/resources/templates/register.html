@@ -9,7 +9,7 @@
 </head>
 
 <body>
-
+<!-- language select dropdown -->
     <div class="dropdowndiv">
         <form id="languageForm">
             <select id="languageSelect" onchange="changeLanguage(this.value)">
@@ -21,13 +21,13 @@
         </form>
     </div>
 
-
+<!-- header and return button -->
     <div class="header">
         <button class="gg-arrow-left-o" onclick="window.location.href='/login';"></button>
         <h1 class="title-container" th:text="#{lang.register}"></h1>
     </div>
 
-
+<!-- register form with register button -->
     <form th:action="@{/register}" method="post">
         <div><label><input type="text" name="username" th:placeholder="#{lang.username}" required /> </label></div>
         <div><label><input type="password" name="password" th:placeholder="#{lang.password}" required /> </label></div>
@@ -36,9 +36,8 @@
     </form>
 
 
-
     <script type="text/javascript">
-        // Function to initialize the dropdown menu with the current language
+        // Function to diplay the selected language in the dropdown menu.
         window.onload = function () {
             var lang = getParameterByName('lang') || 'en'; // Default to English if no language parameter is provided
             document.getElementById('languageSelect').value = lang;

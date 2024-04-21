@@ -46,7 +46,7 @@ public class TodoController {
         return "todolist";
     }
 
-    // Save Todo
+    // Save todo list
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public String save(Todo todo) {
         todoRepository.save(todo);
@@ -62,13 +62,13 @@ public class TodoController {
         return ResponseEntity.ok().body(successMessage);
     }
 
-    // RESTful service to get all todos
+    // RESTful service to get all todo lists
     @RequestMapping(value = "/todos", method = RequestMethod.GET)
     public @ResponseBody List<Todo> todoListRest() {
         return (List<Todo>) todoRepository.findAll();
     }
 
-    // RESTful service to get a todo by id
+    // RESTful service to get a todo lists by id
     @SuppressWarnings("null")
     @RequestMapping(value = "/todo/{id}", method = RequestMethod.GET)
     public @ResponseBody Optional<Todo> findBookRest(@PathVariable("id") Long todoId) {

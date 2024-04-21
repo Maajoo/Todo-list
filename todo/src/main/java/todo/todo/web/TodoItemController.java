@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,10 +29,8 @@ public class TodoItemController {
     private TodoItemRepository todoitemRepository;
     @Autowired
     private TodoRepository todoRepository;
-    @Autowired
-    private MessageSource messageSource;
 
-    // Todo item page
+    // Selected todo page
     @RequestMapping("/open/{id}")
     public String giveTodolist(@PathVariable("id") Long todoId, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -42,14 +38,14 @@ public class TodoItemController {
         model.addAttribute("username", username);
         model.addAttribute("todoitems", todoitemRepository.findAllByTodoId(todoId));
 
-        // Retrieve the todo list
+        // Retrieve the todo list by id
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid todo Id: " +
                         todoId));
 
-        // Retrieve and pass the list of todo items associated with the todo list
+        // Retrieve and pass the list of todo items associated with the selected todo
+        // list
         List<TodoItem> todoItems = todoitemRepository.findAllByTodoId(todoId);
-
         model.addAttribute("todo", todo);
         model.addAttribute("todoItems", todoItems);
 
@@ -59,12 +55,11 @@ public class TodoItemController {
     // Save Todoitem
     @RequestMapping(value = "/saveitem/{todoId}", method = RequestMethod.POST)
     public String saveItem(@PathVariable("todoId") Long todoId, TodoItem todoItem) {
-        // Set the todo list for the todo item
+
+        // Set the todo list id for the todo item
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid todo Id: " + todoId));
         todoItem.setTodo(todo);
-
-        // Save the todo item to the repository
         todoitemRepository.save(todoItem);
 
         // Redirect to the selectedtodo page for the current todo list
@@ -76,8 +71,7 @@ public class TodoItemController {
     public ResponseEntity<?> deleteItem(@PathVariable Long todoItemId) {
         todoitemRepository.deleteById(todoItemId);
 
-        String successMessage = messageSource.getMessage("todo.delete.success", null, LocaleContextHolder.getLocale());
-        return ResponseEntity.ok().body(successMessage);
+        return ResponseEntity.ok().build();
     }
 
     // Toggle todo item status
@@ -88,18 +82,21 @@ public class TodoItemController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid todo item Id: " + todoItemId));
         todoItem.setStatus(status);
         todoitemRepository.save(todoItem);
+
         return ResponseEntity.ok().build();
     }
 
     // RESTful service to get all todo items
     @RequestMapping(value = "/todoitems", method = RequestMethod.GET)
     public @ResponseBody List<TodoItem> todoListRest() {
+
         return (List<TodoItem>) todoitemRepository.findAll();
     }
 
-    // RESTful service to get a todo by id
+    // RESTful service to get a todo item by id
     @RequestMapping(value = "/todoitem/{id}", method = RequestMethod.GET)
     public @ResponseBody Optional<TodoItem> findTodoRest(@PathVariable("id") Long todoitemId) {
+
         return todoitemRepository.findById(todoitemId);
     }
 }

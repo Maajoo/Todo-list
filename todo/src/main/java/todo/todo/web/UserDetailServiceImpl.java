@@ -18,12 +18,20 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Retrieve user details from the repository based on the provided username
         User currentUser = repository.findByUsername(username);
+
+        // Check if the user exists
         if (currentUser == null) {
+            // If user not found, throw UsernameNotFoundException
             throw new UsernameNotFoundException("Could not find user with username: " + username);
         }
+
+        // Prepare user roles
         String[] roles = currentUser.getRole().startsWith("ROLE_") ? new String[] { currentUser.getRole() }
                 : new String[] { "ROLE_" + currentUser.getRole() };
+
+        // Create UserDetails object representing the authenticated user
         UserDetails user = new org.springframework.security.core.userdetails.User(username,
                 currentUser.getPasswordHash(),
                 AuthorityUtils.createAuthorityList(roles));

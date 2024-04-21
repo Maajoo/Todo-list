@@ -9,7 +9,7 @@
 </head>
 
 <body>
-
+<!-- language select dropdown -->
     <div class="dropdowndiv">
         <form id="languageForm">
             <select id="languageSelect" onchange="changeLanguage(this.value)">
@@ -21,14 +21,20 @@
         </form>
     </div>
 
+    <!-- header -->
     <h1 th:text="#{login.page.title}"></h1>
+
+    <!-- invalid user -->
     <div th:if="${param.error}">
         <h2 th:text="#{lang.invaliduser}"></h2>
     </div>
+
+    <!-- logged out text -->
     <div th:if="${param.logout}">
         <h2 th:text="#{lang.loggedout}"></h2>
     </div>
 
+    <!-- login form and button "Register", "Sign in", "Continue as quest" -->
     <form id="loginForm" th:action="@{/login}" th:lang="${#locale.language}" method="post">
         <div><label><input type="text" name="username" id="username" th:placeholder="#{lang.username}" /></label></div>
         <div><label><input type="password" name="password" id="password" th:placeholder="#{lang.password}" /></label>
@@ -46,8 +52,9 @@
         </div>
     </form>
 
+
     <script type="text/javascript">
-        // Function to initialize the dropdown menu with the current language
+        // Function to diplay the selected language in the dropdown menu.
         window.onload = function () {
             var lang = getParameterByName('lang') || 'en'; // Default to English if no language parameter is provided
             document.getElementById('languageSelect').value = lang;
@@ -74,5 +81,4 @@
         }
     </script>
 </body>
-
 </html>

@@ -14,6 +14,7 @@ public class LanguageController {
     @Autowired
     private LocaleResolver localeResolver;
 
+    // Set language and return to endpoing "/"
     @PostMapping("/lang")
     public String setLanguage(HttpServletRequest request, HttpServletResponse response, String lang) {
         Locale locale = new Locale(lang);

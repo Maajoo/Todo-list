@@ -21,21 +21,19 @@ public class WebSecurityConfig {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    // with lambda
     @SuppressWarnings("removal")
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(antMatcher("/css/**")).permitAll() // Enable css when logged out
-                        .requestMatchers(antMatcher("/styles.css")).permitAll()
-                        .requestMatchers(antMatcher("/toggleStatus/**")).hasAnyRole("ADMIN", "USER")
-                        .requestMatchers(antMatcher("/deleteItem/**")).hasAnyRole("ADMIN", "USER")
-                        .requestMatchers(antMatcher("/deleteList/**")).hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(antMatcher("/styles.css")).permitAll() // Enable css without authentication
+                        .requestMatchers(antMatcher("/toggleStatus/**")).hasAnyRole("ADMIN", "USER") // Allow access to toggleStatus for ADMIN and USER roles
+                        .requestMatchers(antMatcher("/deleteItem/**")).hasAnyRole("ADMIN", "USER") // Allow access to deleteItem for ADMIN and USER roles
+                        .requestMatchers(antMatcher("/deleteList/**")).hasAnyRole("ADMIN", "USER") // Allow access to deleteList for ADMIN and USER roles
                         .requestMatchers(antMatcher("/add-todo-item")).hasAnyRole("ADMIN", "USER") // Allow access to add-todo-item for ADMIN and USER roles
                         .requestMatchers(antMatcher("/h2-console/**")).permitAll() // Allow access to H2 console
                         .requestMatchers(antMatcher("/register")).permitAll() // Allow access to registration endpoint without authentication
-                        .requestMatchers(antMatcher("/login")).permitAll()
+                        .requestMatchers(antMatcher("/login")).permitAll() // Allow access to registration endpoint without authentication
                         .anyRequest().authenticated())
                 .formLogin(formlogin -> formlogin
                         .loginPage("/login").permitAll()
@@ -50,6 +48,7 @@ public class WebSecurityConfig {
         return http.build();
     }
 
+    // Password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

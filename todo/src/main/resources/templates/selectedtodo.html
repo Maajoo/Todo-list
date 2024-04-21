@@ -11,7 +11,7 @@
 
 <body>
 
-
+    <!-- language select dropdown and username -->
     <div class="headerlanguagename">
         <div class="dropdowndiv">
             <form id="languageForm">
@@ -28,21 +28,23 @@
         </div>
     </div>
 
+    <!-- Logout button -->
     <div class="logout-container">
         <button class="logoutbutton" onclick="window.location.href='/logout';" th:text="#{lang.logout}"></button>
     </div>
 
+    <!-- header and return button -->
     <div class="header">
         <button class="gg-arrow-left-o" onclick="window.location.href='/todolist';"></button>
         <h1 class="title-container" th:text="${todo.name}"></h1>
     </div>
 
-
+    <!-- create new tasks form -->
     <form th:object="${todoItem}" th:action="@{'/saveitem/' + ${todo.id}}" method="post">
-        <!-- Hidden input field to store the ID of the current todo list -->
+
+        <!-- Hidden input field to store the ID of the selected todo list -->
         <input type="hidden" name="todoId" th:value="${todo.id}" />
 
-        <!-- Input field for entering the title of the new todo item -->
         <input sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" class="textfield" type="text" id="title"
             name="title" th:placeholder="#{lang.task}" required />
 
@@ -53,6 +55,7 @@
             value="Save item" th:text="#{lang.save}"></button>
     </form>
 
+    <!-- list of to-do tasks -->
     <div th:if="${not #lists.isEmpty(todoItems)}">
         <h2 th:text="#{lang.todos}"></h2>
         <div class="table-container">
@@ -68,15 +71,14 @@
                     <td>
                         <label class="container">
                             <!-- Single checkbox for toggle (accessible to USER and ADMIN) -->
-                            <input type="checkbox" th:id="'status_' + ${todoItem.id}"
-                                   th:checked="${todoItem.status}"
-                                   th:onclick="'javascript:toggleStatus(' + ${todoItem.id} + ');'"
-                                   sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')"/>
+                            <input type="checkbox" th:id="'status_' + ${todoItem.id}" th:checked="${todoItem.status}"
+                                th:onclick="'javascript:toggleStatus(' + ${todoItem.id} + ');'"
+                                sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" />
                             <!-- Display-only checkbox (for others) -->
                             <input type="checkbox" th:id="'status_' + ${todoItem.id}" disabled
-                                   th:checked="${todoItem.status}"
-                                   th:onclick="'javascript:toggleStatus(' + ${todoItem.id} + ');'"
-                                   sec:authorize="!hasAnyRole('ROLE_ADMIN', 'ROLE_USER')"/>
+                                th:checked="${todoItem.status}"
+                                th:onclick="'javascript:toggleStatus(' + ${todoItem.id} + ');'"
+                                sec:authorize="!hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" />
                             <span class="checkmark"></span>
                         </label>
                     </td>
@@ -89,23 +91,22 @@
         </div>
     </div>
 
+    <!-- In case of no to-to tasks print out #{lang.notodos} -->
     <div th:if="${#lists.isEmpty(todoItems)}">
         <h2 th:text="#{lang.notodos}"></h2>
     </div>
 
 
+    <!-- Confirm the delete action -->
     <script th:inline="javascript">
         function deleteItem(todoItemId) {
-            if (confirm('Are you sure you want to delete this todo item?')) {
+            // Confirm if the user wants to delete todo item
+            if (confirm('Are you sure you want to delete this task?')) {
                 // Send AJAX request to delete todo item
                 fetch('/deleteItem/' + todoItemId, {
                     method: 'DELETE',
                 }).then(function (response) {
-                    if (!response.ok) {
-                        console.error('Failed to delete todo item');
-                    } else {
-                        window.location.reload();
-                    }
+                    window.location.reload();
                 }).catch(function (error) {
                     console.error('Failed to delete todo item:', error);
                 });
@@ -113,6 +114,7 @@
         }
     </script>
 
+    <!-- Toggle the checkbox status -->
     <script th:inline="javascript">
         function toggleStatus(todoItemId) {
             var checkbox = document.getElementById('status_' + todoItemId);
@@ -125,17 +127,15 @@
                 },
                 body: JSON.stringify({ status: checkbox.checked }),
             }).then(function (response) {
-                if (!response.ok) {
-                    console.error('Failed to toggle status');
-                }
             }).catch(function (error) {
                 console.error('Failed to toggle status:', error);
             });
         }
     </script>
 
+
     <script type="text/javascript">
-        // Function to initialize the dropdown menu with the current language
+        // Function to diplay the selected language in the dropdown menu.
         window.onload = function () {
             var lang = getParameterByName('lang') || 'en'; // Default to English if no language parameter is provided
             document.getElementById('languageSelect').value = lang;

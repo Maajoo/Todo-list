@@ -9,6 +9,7 @@
 </head>
 
 <body>
+    <!-- language select dropdown and username -->
     <div class="headerlanguagename">
         <div class="dropdowndiv">
             <form id="languageForm">
@@ -24,17 +25,22 @@
             <h5 class="username" th:text="${username}"></h5>
         </div>
     </div>
+
+    <!-- Logout button -->
     <div class="logout-container">
         <button class="logoutbutton" onclick="window.location.href='/logout';" th:text="#{lang.logout}"></button>
     </div>
 
-
+    <!-- header -->
     <h1 th:text="#{lang.todolists}"></h1>
+
+    <!-- create new to-do list form -->
     <form sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" th:object="${todo}" th:action="@{save}" action="#" method="post">
         <input type="text" id="name" name="name" th:placeholder="#{lang.listname}" required />
         <button class="savebutton savebutton1" type="submit" th:text="#{lang.save}"></button>
     </form>
 
+    <!-- list of to-do lists -->
     <div class="todolist-container" th:if="${not #lists.isEmpty(todos)}">
         <h2 th:text="#{lang.existinglists}">Existing Lists</h2>
         <ul>
@@ -54,10 +60,13 @@
 
         </ul>
     </div>
+
+    <!-- In case of no to-to lists print out #{lang.nolists} -->
     <div th:if="${#lists.isEmpty(todos)}">
         <h2 th:text="#{lang.nolists}"></h2>
     </div>
 
+    <!-- Confirm the delete action -->
     <script th:inline="javascript">
         function deleteList(todoId) {
             if (confirm('Are you sure you want to delete this todo list?')) {
@@ -76,14 +85,16 @@
                 });
             }
         }
+    </script>
 
-
-        // Function to initialize the dropdown menu with the current language
+    <script type="text/javascript">
+        // Function to diplay the selected language in the dropdown menu.
         window.onload = function () {
             var lang = getParameterByName('lang') || 'en'; // Default to English if no language parameter is provided
             document.getElementById('languageSelect').value = lang;
         };
 
+        // Function to update the selected language and reload the page
         function changeLanguage(lang) {
             var currentUrl = window.location.href;
             var baseUrl = currentUrl.split('?')[0];
