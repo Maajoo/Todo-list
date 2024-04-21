@@ -84,7 +84,7 @@
                     </td>
                     <td>
                         <button sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" class="deletebutton deletebutton1"
-                            th:onclick="'javascript:deleteItem(' + ${todoItem.id} + ');'">Delete</button>
+                            th:onclick="'javascript:deleteItem(' + ${todoItem.id} + ');'" th:text="#{lang.delete}"></button>
                     </td>
                 </tr>
             </table>
