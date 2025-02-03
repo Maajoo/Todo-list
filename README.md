@@ -35,7 +35,7 @@ The Todo-list application is a web-based task management tool developed as my fi
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/your-username/todo-list.git
+    git clone https://github.com/Maajoo/todo-list.git
     cd todo-list/todo
     ```
 
